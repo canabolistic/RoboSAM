@@ -29,14 +29,20 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.awt.event.ActionEvent;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
 
 public class YobitBOT extends JFrame {
 
 	
 	private static final String USER_AGENT = "Mozilla/5.0";
 	private static String GET_URL;
+	private static String marketSel;
 	private JPanel contentPane;
 	private JTextField textField;
+	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private JRadioButton rbBtc;
+	private JRadioButton rbUsd;
 
 	/**
 	 * Launch the application.
@@ -69,7 +75,13 @@ public class YobitBOT extends JFrame {
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					GET_URL = "https://yobit.net/api/2/" + textField.getText() + "_btc/ticker";
+					if(rbBtc.isSelected())
+						
+						marketSel = "btc";
+					else 
+						marketSel = "usd";
+					GET_URL = "https://yobit.net/api/2/" + textField.getText() + "_" + marketSel.toString() + "/ticker";
+					JOptionPane.showMessageDialog(null, "https://yobit.net/api/2/" + textField.getText() + "_" + marketSel.toString() + "/ticker");
 					sendGET();	
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -83,28 +95,50 @@ public class YobitBOT extends JFrame {
 		textField = new JTextField();
 		textField.setToolTipText("e.g XRP");
 		textField.setColumns(10);
+		
+		rbUsd = new JRadioButton("USD");
+		buttonGroup.add(rbUsd);
+		
+		rbBtc = new JRadioButton("BTC");
+		rbBtc.setSelected(true);
+		buttonGroup.add(rbBtc);
+		
+		
+		JLabel lblCompare = new JLabel("Market :");
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-					.addContainerGap(325, Short.MAX_VALUE)
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addContainerGap(349, Short.MAX_VALUE)
 					.addComponent(btnSubmit)
 					.addContainerGap())
-				.addGroup(gl_contentPane.createSequentialGroup()
+				.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(lblCurrency)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblCurrency)
+						.addComponent(lblCompare))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(245, Short.MAX_VALUE))
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addComponent(rbUsd)
+							.addGap(18)
+							.addComponent(rbBtc))
+						.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(223, Short.MAX_VALUE))
 		);
 		gl_contentPane.setVerticalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPane.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblCurrency)
 						.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, 186, Short.MAX_VALUE)
+					.addGap(53)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblCompare)
+						.addComponent(rbUsd)
+						.addComponent(rbBtc))
+					.addPreferredGap(ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
 					.addComponent(btnSubmit)
 					.addContainerGap())
 		);
@@ -129,8 +163,8 @@ public class YobitBOT extends JFrame {
 			in.close();
 
 			// print result
-			System.out.println(response.toString());
-			JOptionPane.showMessageDialog(null, GET_URL + " : " + response.toString());
+			System.out.println(GET_URL + " : " + response.toString());
+			JOptionPane.showMessageDialog(null, GET_URL + " :           " + response.toString());
 		} else {
 			System.out.println("GET request not worked");
 			JOptionPane.showMessageDialog(null, "Currency Code: Cant Be Empty!");
