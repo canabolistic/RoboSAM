@@ -1,5 +1,11 @@
 package views;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -14,9 +20,21 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.awt.event.ActionEvent;
 
 public class YobitBOT extends JFrame {
 
+	
+	private static final String USER_AGENT = "Mozilla/5.0";
+	private static String GET_URL;
 	private JPanel contentPane;
 	private JTextField textField;
 
@@ -48,6 +66,17 @@ public class YobitBOT extends JFrame {
 		setContentPane(contentPane);
 		
 		JButton btnSubmit = new JButton("Submit");
+		btnSubmit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					GET_URL = "https://yobit.net/api/2/" + textField.getText() + "_btc/ticker";
+					sendGET();	
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
 		
 		JLabel lblCurrency = new JLabel("Currency Code :");
 		
@@ -80,5 +109,30 @@ public class YobitBOT extends JFrame {
 					.addContainerGap())
 		);
 		contentPane.setLayout(gl_contentPane);
+	}
+	
+	private static void sendGET() throws IOException {
+		URL obj = new URL(GET_URL);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("User-Agent", USER_AGENT);
+		int responseCode = con.getResponseCode();
+		if (responseCode == HttpURLConnection.HTTP_OK) { // success
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
+			// print result
+			System.out.println(response.toString());
+			JOptionPane.showMessageDialog(null, GET_URL + " : " + response.toString());
+		} else {
+			System.out.println("GET request not worked");
+		}
 	}
 }
