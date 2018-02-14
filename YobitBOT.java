@@ -133,6 +133,7 @@ public class YobitBOT extends JFrame {
 			JOptionPane.showMessageDialog(null, GET_URL + " : " + response.toString());
 		} else {
 			System.out.println("GET request not worked");
+			JOptionPane.showMessageDialog(null, "Currency Code: Cant Be Empty!");
 		}
 	}
 }
