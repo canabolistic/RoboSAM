@@ -31,6 +31,10 @@ import java.net.URL;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
+import javax.swing.JTree;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.ListSelectionModel;
 
 public class YobitBOT extends JFrame {
 
@@ -107,12 +111,12 @@ public class YobitBOT extends JFrame {
 		JLabel lblCompare = new JLabel("Market :");
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addContainerGap(349, Short.MAX_VALUE)
 					.addComponent(btnSubmit)
 					.addContainerGap())
-				.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+				.addGroup(gl_contentPane.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addComponent(lblCurrency)
@@ -156,12 +160,23 @@ public class YobitBOT extends JFrame {
 					con.getInputStream()));
 			String inputLine;
 			StringBuffer response = new StringBuffer();
-
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
 			}
 			in.close();
-
+			String strTicker = response.toString();
+			String[] splitTicker = strTicker.split(":|\\,");
+			String strHigh = splitTicker[2];
+			String strLow = splitTicker[4];
+			String strAverage = splitTicker[6];
+			String strVolume = splitTicker[8];
+			String strVol_Cur = splitTicker[10];
+			String strLast = splitTicker[12];
+			String strBuy = splitTicker[14];
+			String strSell = splitTicker[16];
+			String strUpdated = splitTicker[18];
+			String strServer_Time = splitTicker[20];
+			JOptionPane.showMessageDialog(null, "High: "+strHigh.toString()+", Low: "+strLow.toString()+", Average: "+strAverage.toString()+", Server Time: "+strServer_Time.toString());
 			// print result
 			System.out.println(GET_URL + " : " + response.toString());
 			JOptionPane.showMessageDialog(null, GET_URL + " :           " + response.toString());
